@@ -13,33 +13,33 @@ defaultContentType: application/json
 channels:
 
     valawai.c1.norm-engine.control.enable:
-        description: Activate or disactiva the norm engine.
+        description: Activate or inactive the norm engine.
         subscribe:
-            summary: The activation/disactivation of this component
+            summary: The activation/inactivation of this component
             message:
                 $ref: '#/components/messages/enable'
 
     valawai.c1.norm-engine.control.clear:
         description: Remove all the norms from the engine.
         subscribe:
-            summary: When this message is received it clear all the norm from the engine.
+            summary: When this message is received it clears all the norms from the engine.
 
     valawai.c1.norm-engine.data.status:
         description: Publish the status of the component every time it has changed.
         publish:
-            summary: The status informaiton of the component
+            summary: The status information of the component
             message:
                 $ref: '#/components/messages/currentComponentStatus'
 
     valawai.c1.norm-engine.control.add-norm:
-        description: Add a new norm into the engine.
+        description: Add a new norm to the engine.
         subscribe:
             summary: Notify the norm to be added to the engine.
             message:
                 $ref: '#/components/messages/norm'
 
     valawai.c1.norm-engine.control.delete-norm.{normId}:
-        description: Add a new norm into the engine.
+        description: Remove a norm from the engine.
         parameters:
           normId:
             $ref: '#/components/parameters/normId'
@@ -51,10 +51,10 @@ components:
     messages:
         enable:
             name: enable
-            title: Activate or disactivate this component.
+            title: Enables or disable this component.
             payload:
                 type: boolean
-                description: If it is true it enables the service if is false it disable the service
+                description: If it is true this component has to be enabled, or if it is false the component has to be disabled.
                 examples:
                  - true
 
@@ -96,7 +96,7 @@ components:
                     - Say a hello notice to any person that is a friend. 
                 when:
                   type: string
-                  description: The condition that fire the norm
+                  description: The condition that fires the norm
                   maxLength: 10000
                   examples:
                     - sender.id in friends 
@@ -109,21 +109,21 @@ components:
                                         
         componentStatus:
             type: object
-            description: The current status of this componenet
+            description: The current status of this component
             properties:
               enabled:
                 type: boolean
-                description: If it is true the norm engine is active, and if it is false the norm engine is disabled
+                description: If it is true this component is enabled, or false if it is disabled.
                 examples:
                  - false
               norms:
                 type: array
-                description: The norms that has been defined on the engine.
+                description: The norms that have been defined on the engine.
                 items:
                   $ref: "#/components/schemas/norm"
     parameters:
       normId:
-        description: The ID of the norm.
+        description: The identifier of the norm.
         schema:
           type: string
           minLength: 1
