@@ -1,0 +1,132 @@
+asyncapi: '2.6.0'
+info:
+    title: VALAWAI C1 Norm engine
+    version: '0.1.0'
+    description: |
+        This C1 component is a simple norm engine.
+    license:
+        name: MIT
+        url: https://opensource.org/license/mit/
+
+defaultContentType: application/json
+
+channels:
+
+    valawai.c1.norm-engine.control.enable:
+        description: Activate or disactiva the norm engine.
+        subscribe:
+            summary: The activation/disactivation of this component
+            message:
+                $ref: '#/components/messages/enable'
+
+    valawai.c1.norm-engine.control.clear:
+        description: Remove all the norms from the engine.
+        subscribe:
+            summary: When this message is received it clear all the norm from the engine.
+
+    valawai.c1.norm-engine.data.status:
+        description: Publish the status of the component every time it has changed.
+        publish:
+            summary: The status informaiton of the component
+            message:
+                $ref: '#/components/messages/currentComponentStatus'
+
+    valawai.c1.norm-engine.control.add-norm:
+        description: Add a new norm into the engine.
+        subscribe:
+            summary: Notify the norm to be added to the engine.
+            message:
+                $ref: '#/components/messages/norm'
+
+    valawai.c1.norm-engine.control.delete-norm.{normId}:
+        description: Add a new norm into the engine.
+        parameters:
+          normId:
+            $ref: '#/components/parameters/normId'
+        subscribe:
+            summary: Notify the norm to be removed from the engine.
+
+                
+components:
+    messages:
+        enable:
+            name: enable
+            title: Activate or disactivate this component.
+            payload:
+                type: boolean
+                description: If it is true it enables the service if is false it disable the service
+                examples:
+                 - true
+
+        currentComponentStatus:
+            name: currentComponentStatus
+            title: The status of this component.
+            payload:
+                $ref: "#/components/schemas/componentStatus"
+
+        norm:
+            name: norm
+            title: The information of a norm for the engine.
+            payload:
+                $ref: "#/components/schemas/norm"
+        
+    schemas:
+        norm:
+            type: object
+            properties:
+                id:
+                  type: string
+                  description: The identifier of the norm.
+                  minLength: 1
+                  maxLength: 100
+                  examples:
+                    - 550e8400-e29b-41d4-a716-446655440000
+                name:
+                  type: string
+                  description: The name of the norm.
+                  minLength: 3
+                  maxLength: 1000
+                  examples:
+                    - Say hello to friends. 
+                description:
+                  type: string
+                  description: The description of the norm.
+                  maxLength: 10000
+                  examples:
+                    - Say a hello notice to any person that is a friend. 
+                when:
+                  type: string
+                  description: The condition that fire the norm
+                  maxLength: 10000
+                  examples:
+                    - sender.id in friends 
+                then:
+                  type: string
+                  description: The actions to do if the condition is valid.
+                  maxLength: 10000
+                  examples:
+                    - C0_noticeboard.sendNotice("Hello friend","") 
+                                        
+        componentStatus:
+            type: object
+            description: The current status of this componenet
+            properties:
+              enabled:
+                type: boolean
+                description: If it is true the norm engine is active, and if it is false the norm engine is disabled
+                examples:
+                 - false
+              norms:
+                type: array
+                description: The norms that has been defined on the engine.
+                items:
+                  $ref: "#/components/schemas/norm"
+    parameters:
+      normId:
+        description: The ID of the norm.
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 100
+          examples:
+            - 550e8400-e29b-41d4-a716-446655440000
